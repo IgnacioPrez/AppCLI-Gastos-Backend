@@ -13,7 +13,6 @@ router.post('/register',[
     check("password","La contraseña debe ser de 6 caracteres como minimo").isLength({
         min:6
     }),
-    //middleware custom
     check('email').custom(existEmail),
     collectBugs
 ], register)

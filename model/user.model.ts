@@ -18,7 +18,7 @@ const userSchema = new Schema<IUser>({
   dni: { type: String, required: true },
   role: { type: String, default: ROLES.user },
   code: { type: String },
-  verified: { type: Boolean },
+  verified: { type: Boolean ,default:false},
 })
 
 //En esta funcion especificamos que es lo que queremos retornar en formato JSON al momento de que el cliente pida los datos

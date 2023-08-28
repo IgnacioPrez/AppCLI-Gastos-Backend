@@ -10,7 +10,9 @@ export const addInCart = async (req: Request, res: Response) => {
   try {
     const product: any = await Products.findOne({ _id: productId })
     const myCart: any = await Cart.findOne({ userId: _id }).populate('items')
-    const productInCart: any =  myCart?.items.map((el: any) => String(el.productId) as string).find((id:string) => id === productId)
+    const productInCart: any = myCart?.items
+      .map((el: any) => String(el.productId) as string)
+      .find((id: string) => id === productId)
     await validateProduct(productId, res)
 
     if (myCart?.items || productInCart) {
@@ -54,10 +56,10 @@ export const addInCart = async (req: Request, res: Response) => {
 
 export const getCart = async (req: Request, res: Response) => {
   const { _id } = req.body.userConfirmed
-  const cart: ICart[] | null = await Cart.find({userId:_id})
+  const cart: ICart[] | null = await Cart.find({ userId: _id })
   if (!cart) return res.status(400).json({ message: 'No tiene ningun articulo en su carrito.' })
   res.json({
-    cart
+    cart,
   })
 }
 
@@ -81,7 +83,7 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       .findIndex((el: string) => el === productId)
 
     if (productInCart !== -1) {
-      myCart.items.splice(productInCart, 1);
+      myCart.items.splice(productInCart, 1)
       await Cart.findByIdAndUpdate(
         myCart._id,
         {
@@ -90,8 +92,8 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
           },
         },
         { new: true }
-      ) 
-      await myCart.save();
+      )
+      await myCart.save()
 
       res.status(200).json({
         message: `Se eliminó el siguiente artículo de su carrito: ${product?.title}`,
@@ -111,7 +113,7 @@ export const clearCart = async (req: Request, res: Response): Promise<void> => {
   const dateOfUser = req.body.userConfirmed
 
   try {
-    const myCart: any = await Cart.find({userId:dateOfUser._id })
+    const myCart: any = await Cart.find({ userId: dateOfUser._id })
     if (!myCart) {
       res.status(401).json({
         message: 'No hay productos para eliminar en el carrito',

@@ -3,10 +3,10 @@ import { connectDB } from '../database/config'
 import fileUpload from 'express-fileupload'
 import UserRoutes from '../routes/user.routes'
 import ProductsRoutes from '../routes/products.routes'
+import PayRoutes from '../routes/payment.routes'
+
 import cors from 'cors'
-import IssueRoutes from '../routes/issue.routes'
 import { v2 as cloudinary } from 'cloudinary'
-import OrdersRoutes from '../routes/orders.routes'
 import CartRoutes from '../routes/carts.routes'
 
 
@@ -15,15 +15,15 @@ export class Server {
   port: string | undefined
   userRoutes: string
   productRoutes: string
-  ordersRoutes: string
   cartRoutes:string
+  payRoutes:string
   constructor() {
     this.app = express()
     this.port = process.env.PORT
     this.userRoutes = '/user'
     this.productRoutes = '/products'
-    this.ordersRoutes = '/order'
     this.cartRoutes = '/cart'
+    this.payRoutes = '/pay'
     this.startDb()
     this.middlewares()
     this.routes()
@@ -55,8 +55,7 @@ export class Server {
   routes(): void {
     this.app.use(this.userRoutes, UserRoutes)
     this.app.use(this.productRoutes, ProductsRoutes)
-    this.app.use(this.ordersRoutes, OrdersRoutes)
     this.app.use(this.cartRoutes, CartRoutes)
-    this.app.use('/issue', IssueRoutes)
+    this.app.use(this.payRoutes,PayRoutes)
   }
 }

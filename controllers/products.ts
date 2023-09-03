@@ -91,29 +91,29 @@ export const filterProducts = async (req: Request, res: Response): Promise<void>
     }
 
     if (filterName === ALL_FILTERS.GARMENT_FOR_MAN) {
-      const germentForMan = await resultOfFilters(filterName)
+      const products = await resultOfFilters(filterName)
       res.status(200).json({
-        germentForMan,
+        products,
       })
       return
     }
     if (filterName === ALL_FILTERS.GARMENT_FOR_WOMAN) {
-      const germentForWoman = await resultOfFilters(filterName)
+      const products = await resultOfFilters(filterName)
       res.status(200).json({
-        germentForWoman,
+        products,
       })
     }
 
     if (filterName === ALL_FILTERS.JEWELRY) {
-      const jewelry = await resultOfFilters(filterName)
+      const products = await resultOfFilters(filterName)
       res.status(200).json({
-        jewelry,
+        products,
       })
     }
     if (filterName === ALL_FILTERS.TECHNOLOGY) {
-      const technology = await resultOfFilters(filterName)
+      const products = await resultOfFilters(filterName)
       res.status(200).json({
-        technology,
+        products,
       })
       return
     }

@@ -11,6 +11,7 @@ export interface ICart {
   totalPrice: number
   createdAt: Date
   items: Items
+  statusPaid:boolean
 }
 
 const cartSchema = new Schema<ICart>({
@@ -25,6 +26,7 @@ const cartSchema = new Schema<ICart>({
     },
   ],
   totalPrice: { type: Number },
+  statusPaid:{type:Boolean,default:false},
   createdAt: { type: Date, default: Date.now() },
 })
 

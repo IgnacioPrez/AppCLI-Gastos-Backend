@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   const { fullName, email, password, role, dni }: IUser = req.body
 
   try {
-    if(await User.findOne({email}) || await User.findOne({dni})){
+    if(await User.findOne({email}) ){
       res.status(401).json({
         message:'El usuario ya se encuentra en nuestra base de datos'
       })
@@ -40,6 +40,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     console.log(error)
   }
 }
+
 
 export const verifyUser = async (req: Request, res: Response): Promise<void> => {
   const { email, code }: IUser = req.body

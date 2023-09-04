@@ -23,6 +23,7 @@ export const createProducts = async (req: Request, res: Response) => {
 
     if (!products) return res.status(400).json({ message: 'Error al crear el producto' })
 
+    
     if (existPathImage) {
       const result = await uploadImage(existPathImage.tempFilePath)
       products.image = {

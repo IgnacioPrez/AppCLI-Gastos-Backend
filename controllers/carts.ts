@@ -85,7 +85,7 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    const myCart: any = await Cart.findOne({ userId: _id })
+    const myCart: any = await Cart.findOne({ userId: _id ,statusPaid:false})
     const productInCart = myCart.items
       .map((el: any) => el.productId.toString())
       .findIndex((el: string) => el === productId)
@@ -114,6 +114,9 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
     }
   } catch (err) {
     console.log(err)
+    res.status(500).json({
+      message:err
+    })
   }
 }
 

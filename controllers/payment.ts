@@ -28,7 +28,7 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
         email: email,
         identification: {
           type: 'dni',
-          number: dni,
+          number:String(dni),
         },
         address: {
           street_name: streetName,
@@ -41,7 +41,7 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
         failure: `http://localhost:${process.env.PORT}/pay/failure`,
         pending: `http://localhost:${process.env.PORT}/pay/pending`,
       },
-      notification_url: `https://3e98-181-117-24-61.ngrok.io/pay/webhook/${_id}`,
+      notification_url: `http://localhost:${process.env.PORT}/pay/webhook/${_id}`,
     })
 
 
@@ -64,13 +64,12 @@ export const receiveWebhook = async (req: Request, res: Response) => {
 
     if(existOrder){
       res.status(401).json({
-        message:'Esta compra ya fue efectuada'
+        message:'Esta compra ya fue efectuada '
       })
       return
     }
 
     if (payment.type === 'payment') {
-      if (data.body.status === 'approved') {
         const order = new Order({
           status: true,
           createdAt: Date.now(),
@@ -83,15 +82,9 @@ export const receiveWebhook = async (req: Request, res: Response) => {
         res.status(200).json({
           message: 'Su compra se concreto correctamente',
         })
-      }
       return
-    } else {
-      res.status(401).json({
-        message: 'Ocurrió un error al cargar el pago',
-      })
     }
   } catch (error: any) {
-    console.log(error)
     res.status(500).json({
       message: 'Error en el servidor',
     })

@@ -37,11 +37,11 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
         },
       },
       back_urls: {
-        success: `http://localhost:${process.env.PORT}/pay/succes`,
-        failure: `http://localhost:${process.env.PORT}/pay/failure`,
-        pending: `http://localhost:${process.env.PORT}/pay/pending`,
+        success: `https://app-cli-gastos-backend.vercel.app/pay/succes`,
+        failure: `https://app-cli-gastos-backend.vercel.app/failure`,
+        pending: `https://app-cli-gastos-backend.vercel.app/pending`,
       },
-      notification_url: `http://localhost:${process.env.PORT}/pay/webhook/${_id}`,
+      notification_url: `https://app-cli-gastos-backend.vercel.app/pay/webhook/${_id}`,
     })
 
 

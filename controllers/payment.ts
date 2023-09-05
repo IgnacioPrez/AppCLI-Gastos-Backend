@@ -38,8 +38,8 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
       },
       back_urls: {
         success: `https://app-cli-gastos-backend.vercel.app/pay/succes`,
-        failure: `https://app-cli-gastos-backend.vercel.app/failure`,
-        pending: `https://app-cli-gastos-backend.vercel.app/pending`,
+        failure: `https://app-cli-gastos-backend.vercel.app/pay/failure`,
+        pending: `https://app-cli-gastos-backend.vercel.app/pay/pending`,
       },
       notification_url: `https://app-cli-gastos-backend.vercel.app/pay/webhook/${_id}`,
     })

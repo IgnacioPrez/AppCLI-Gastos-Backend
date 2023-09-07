@@ -23,7 +23,6 @@ export const createProducts = async (req: Request, res: Response) => {
 
     if (!products) return res.status(400).json({ message: 'Error al crear el producto' })
 
-    
     if (existPathImage) {
       const result = await uploadImage(existPathImage.tempFilePath)
       products.image = {
@@ -31,7 +30,6 @@ export const createProducts = async (req: Request, res: Response) => {
         url: result.secure_url,
       }
       await fs.unlink(existPathImage.tempFilePath)
-      
     }
 
     await products.save()
@@ -78,46 +76,17 @@ export const filterProducts = async (req: Request, res: Response): Promise<void>
   const resultOfFilters = (filter?: string) => filter && Products.find({ nameCategory: filter })
 
   try {
-    const result = Object.values(ALL_FILTERS)
-      .filter((el) => {
-        return el === filterName
-      })
-      .join()
-
-    if (!result) {
-      res.status(400).json({
-        message: 'El parametro ingresado no coincide con los filtros',
+    const filterFound = Object.values(ALL_FILTERS).some((filter) => filter === filterName)
+    if (!filterFound) {
+      res.status(401).json({
+        message: 'El filtro es incorrecto',
       })
       return
     }
-
-    if (filterName === ALL_FILTERS.GARMENT_FOR_MAN) {
-      const products = await resultOfFilters(filterName)
-      res.status(200).json({
-        products,
-      })
-      return
-    }
-    if (filterName === ALL_FILTERS.GARMENT_FOR_WOMAN) {
-      const products = await resultOfFilters(filterName)
-      res.status(200).json({
-        products,
-      })
-    }
-
-    if (filterName === ALL_FILTERS.JEWELRY) {
-      const products = await resultOfFilters(filterName)
-      res.status(200).json({
-        products,
-      })
-    }
-    if (filterName === ALL_FILTERS.TECHNOLOGY) {
-      const products = await resultOfFilters(filterName)
-      res.status(200).json({
-        products,
-      })
-      return
-    }
+    const filterProducts = await resultOfFilters(filterName)
+    res.status(201).json({
+      filterProducts,
+    })
   } catch (err) {
     console.log(err)
   }

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import mercadopago from 'mercadopago'
 import { Cart } from '../model/cart.model'
-import { User } from '../model/user.model'
 import { Order } from '../model/order.model'
 
 export const createPay = async (req: Request, res: Response): Promise<void> => {

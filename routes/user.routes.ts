@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { login, register, verifyUser } from '../controllers/auth'
+import { login, logout, profile, register, verifyUser } from '../controllers/auth'
 import { check } from 'express-validator'
 import { collectBugs } from '../middlewares/collectBugs'
 import { existEmail } from '../helpers/validationsDB'
+import { validateJWT } from '../middlewares/validateJWT'
 
 const router = Router()
 
@@ -34,6 +35,14 @@ router.post(
   login
 )
 
+router.get('/profile', [
+  validateJWT,
+  collectBugs
+], profile)
+
+
+
+
 router.patch(
   '/verify',
   [
@@ -43,5 +52,7 @@ router.patch(
   ],
   verifyUser
 )
+
+router.post('/logout',logout)
 
 export default router

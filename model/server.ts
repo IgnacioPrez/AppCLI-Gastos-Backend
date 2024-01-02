@@ -45,7 +45,7 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cors({
-      origin:'https://e-commerce-nine-gamma.vercel.app/',
+      origin:'https://e-commerce-nine-gamma.vercel.app',
       credentials: true
     }))
     this.app.use(express.json())

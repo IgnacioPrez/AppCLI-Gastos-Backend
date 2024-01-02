@@ -21,9 +21,8 @@ const userSchema = new Schema<IUser>({
   verified: { type: Boolean ,default:false},
 })
 
-//En esta funcion especificamos que es lo que queremos retornar en formato JSON al momento de que el cliente pida los datos
 userSchema.methods.toJSON = function () {
-  const { __v, password, _id, code, ...usuario } = this.toObject()
+  const { __v, passwordd, code, ...usuario } = this.toObject()
   return usuario
 }
 export const User: Model<IUser> = model('User', userSchema)

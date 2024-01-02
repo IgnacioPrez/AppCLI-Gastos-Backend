@@ -2,16 +2,17 @@ import { Request, Response } from 'express'
 import { Products } from '../model/products.model'
 import { Cart, ICart } from '../model/cart.model'
 import { validateProduct } from '../helpers/validationsRoutes'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const addInCart = async (req: Request, res: Response) => {
-  const { _id } = req.body.userConfirmed
-  const { productId, quantity } = req.body
+  const { productId, quantity, token } = req.body
 
   try {
     const product: any = await Products.findById(productId)
+    const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
     await validateProduct(productId, res)
 
-    const myCart: any = await Cart.findOne({ userId: _id, statusPaid: false })
+    const myCart: any = await Cart.findOne({ userId: payload.id, statusPaid: false })
 
     const productInCart: any = myCart?.items.find((item: any) => item.productId.toString() === productId)
 
@@ -35,7 +36,7 @@ export const addInCart = async (req: Request, res: Response) => {
     }
 
     const cart = new Cart({
-      userId: _id,
+      userId: payload.id,
       items: {
         productId: product,
         quantity,
@@ -56,7 +57,6 @@ export const addInCart = async (req: Request, res: Response) => {
 
 export const getCart = async (req: Request, res: Response) => {
   const { _id } = req.body.userConfirmed
-
   try {
     const cart: ICart | null = await Cart.findOne({ userId: _id, statusPaid: false }).populate('items.productId')
     if (!cart) {
@@ -85,7 +85,7 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    const myCart: any = await Cart.findOne({ userId: _id ,statusPaid:false})
+    const myCart: any = await Cart.findOne({ userId: _id, statusPaid: false })
     const productInCart = myCart.items
       .map((el: any) => el.productId.toString())
       .findIndex((el: string) => el === productId)
@@ -115,16 +115,16 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
   } catch (err) {
     console.log(err)
     res.status(500).json({
-      message:err
+      message: err,
     })
   }
 }
 
 export const clearCart = async (req: Request, res: Response): Promise<void> => {
-  const dateOfUser = req.body.userConfirmed
+  const {_id} = req.body.userConfirmed
 
   try {
-    const myCart: any = await Cart.find({ userId: dateOfUser._id })
+    const myCart: any = await Cart.find({ userId: _id })
 
     if (myCart.length === 0) {
       res.status(401).json({

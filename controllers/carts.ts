@@ -56,9 +56,10 @@ export const addInCart = async (req: Request, res: Response) => {
 }
 
 export const getCart = async (req: Request, res: Response) => {
-  const { _id } = req.body.userConfirmed
+  const { token } = req.query;
   try {
-    const cart: ICart | null = await Cart.findOne({ userId: _id, statusPaid: false }).populate('items.productId')
+    const payload = jwt.verify(token as string, process.env.SECRET_PASSWORD as string) as JwtPayload
+    const cart: ICart | null = await Cart.findOne({ userId: payload.id, statusPaid: false }).populate('items.productId')
     if (!cart) {
       return res.status(400).json({ message: 'No tiene ningún artículo en su carrito.' })
     }
@@ -73,11 +74,10 @@ export const getCart = async (req: Request, res: Response) => {
 }
 
 export const deleteFromCart = async (req: Request, res: Response): Promise<void> => {
-  const { _id } = req.body.userConfirmed
   const { productId } = req.params
+  const {token} = req.body
   try {
     const product: any = await Products.findOne({ _id: productId })
-
     if (!productId) {
       res.status(401).json({
         message: 'Debe proporcionar un ID del producto ',
@@ -85,7 +85,8 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    const myCart: any = await Cart.findOne({ userId: _id, statusPaid: false })
+    const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
+    const myCart: any = await Cart.findOne({ userId: payload.id, statusPaid: false })
     const productInCart = myCart.items
       .map((el: any) => el.productId.toString())
       .findIndex((el: string) => el === productId)

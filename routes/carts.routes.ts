@@ -18,7 +18,7 @@ router.post(
   addInCart
 )
 
-router.get('/', [validateJWT, isVerified, collectBugs], getCart)
+router.get('/', getCart)
 
 router.delete(
   '/clearCart',
@@ -27,6 +27,6 @@ router.delete(
   clearCart
 )
 
-router.patch('/deletefromCartById/:productId', [validateJWT, isVerified, collectBugs], deleteFromCart)
+router.patch('/deletefromCartById/:productId', deleteFromCart)
 
 export default router

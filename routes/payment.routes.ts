@@ -10,8 +10,6 @@ const router = Router()
 router.post(
   '/create-payment',
   [
-    validateJWT, 
-    isVerified,
     check('email', 'El correo debe ser válido').isEmail(),
     check('surname', 'El apellido es requerido').not().isEmpty(),
     check('name', 'El nombre es requerido').not().isEmpty(),

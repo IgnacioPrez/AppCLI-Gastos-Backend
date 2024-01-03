@@ -2,13 +2,13 @@ import { Request, Response } from 'express'
 import mercadopago from 'mercadopago'
 import { Cart } from '../model/cart.model'
 import { Order } from '../model/order.model'
+import jwt,{ JwtPayload } from 'jsonwebtoken'
 
 export const createPay = async (req: Request, res: Response): Promise<void> => {
-  const { _id } = req.body.userConfirmed
-  const { email, dni, streetName, streetNumber, zipCode, name, surname } = req.body
-
+  const { email, dni, streetName, streetNumber, zipCode, name, surname,token } = req.body
   try {
-    const cart: any = await Cart.findOne({ userId: _id }).populate('items.productId')
+    const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
+    const cart: any = await Cart.findOne({ userId: payload.id }).populate('items.productId')
 
     mercadopago.configure({
       access_token: process.env.TOKEN_MP_API as string,
@@ -40,7 +40,7 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
         failure: `http://localhost:${process.env.PORT}/pay/failure`,
         pending: `http://localhost:${process.env.PORT}/pay/pending`,
       },
-      notification_url: `http://localhost:${process.env.PORT}/pay/webhook/${_id}`,
+      notification_url: `https://e17d-186-122-88-133.ngrok-free.app/pay/webhook/${payload.id}`,
     })
 
 

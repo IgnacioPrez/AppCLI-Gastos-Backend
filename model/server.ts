@@ -4,10 +4,10 @@ import fileUpload from 'express-fileupload'
 import UserRoutes from '../routes/user.routes'
 import ProductsRoutes from '../routes/products.routes'
 import PayRoutes from '../routes/payment.routes'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { v2 as cloudinary } from 'cloudinary'
 import CartRoutes from '../routes/carts.routes'
+import cookieParser from 'cookie-parser'
 
 
 export class Server {
@@ -45,7 +45,7 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cors({
-      origin:'*',
+      origin:'https://e-commerce-nine-gamma.vercel.app/',
       credentials: true
     }))
     this.app.use(express.json())

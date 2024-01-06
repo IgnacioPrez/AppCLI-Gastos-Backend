@@ -40,7 +40,7 @@ export const createPay = async (req: Request, res: Response): Promise<void> => {
         failure: `http://localhost:${process.env.PORT}/pay/failure`,
         pending: `http://localhost:${process.env.PORT}/pay/pending`,
       },
-      notification_url: `https://e17d-186-122-88-133.ngrok-free.app/pay/webhook/${payload.id}`,
+      notification_url: `http://localhost:${process.env.PORT}/pay/webhook/${payload.id}`,
     })
 
 

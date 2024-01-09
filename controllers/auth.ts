@@ -5,7 +5,6 @@ import { ROLES } from '../helpers/constants'
 import randomstring from 'randomstring'
 import { sendEmail } from '../mailer/mailer'
 import { generateRefreshToken, tokenGenerator } from '../helpers/generateToken'
-import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   const { fullName, email, password, role, dni }: IUser = req.body
@@ -17,14 +16,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       })
     }
     const user = new User({ fullName, email, password, role, dni, verified: false })
+    user.role = ROLES.user
     const salt = bcryptjs.genSaltSync()
     user.password = bcryptjs.hashSync(password, salt)
-
-    const adminKey = req.headers['admin-key']
-
-    if (adminKey === process.env.KEY_FOR_ADMIN) {
-      user.role = ROLES.admin
-    }
     const newCode = randomstring.generate(6)
     user.code = newCode
 

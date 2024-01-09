@@ -9,7 +9,9 @@ import cors from 'cors'
 import { v2 as cloudinary } from 'cloudinary'
 import CartRoutes from '../routes/carts.routes'
 
+import { config } from 'dotenv'
 
+config()
 export class Server {
   app: Express
   port: string | undefined
@@ -45,7 +47,7 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cors({
-      origin:'https://e-commerce-nine-gamma.vercel.app/',
+      origin:'https://app-cli-gastos-backend.vercel.app/',
       credentials: true
     }))
     this.app.use(express.json())

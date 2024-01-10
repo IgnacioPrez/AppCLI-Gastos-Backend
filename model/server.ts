@@ -47,7 +47,7 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cors({
-      origin:'https://app-cli-gastos-backend.vercel.app/',
+      origin:'https://app-cli-gastos-backend.vercel.app',
       credentials: true
     }))
     this.app.use(express.json())

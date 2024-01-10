@@ -39,7 +39,8 @@ export const generateRefreshToken = (id:string = '',res:Response) => {
         expires:new Date(Date.now() + expiresIn * 1000),
         httpOnly:true,
         secure:!(process.env.MODO !== 'developer'),
-        sameSite:'none'
+        sameSite:'lax',
+        domain: 'e-commerce-nine-gamma.vercel.app'
       })
     } catch (error) {
       console.log(error)

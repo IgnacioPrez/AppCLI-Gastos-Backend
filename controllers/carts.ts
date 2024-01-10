@@ -5,9 +5,11 @@ import { validateProduct } from '../helpers/validationsRoutes'
 import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const addInCart = async (req: Request, res: Response) => {
-  const { productId, quantity, token } = req.body
+  const { productId, quantity } = req.body
+  const authorizationHeader = req.headers['authorization'] as string
 
   try {
+    const token = authorizationHeader.split(' ')[1]
     const product: any = await Products.findById(productId)
     const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
     await validateProduct(productId, res)
@@ -52,12 +54,14 @@ export const addInCart = async (req: Request, res: Response) => {
     })
   } catch (err) {
     console.log(err)
+    res.status(500).json({message:'Error en el servidor'})
   }
 }
 
 export const getCart = async (req: Request, res: Response) => {
-  const { token } = req.query;
+  const authorizationHeader = req.headers['authorization'] as string
   try {
+    const token = authorizationHeader.split(' ')[1]
     const payload = jwt.verify(token as string, process.env.SECRET_PASSWORD as string) as JwtPayload
     const cart: ICart | null = await Cart.findOne({ userId: payload.id, statusPaid: false }).populate('items.productId')
     if (!cart) {
@@ -69,14 +73,17 @@ export const getCart = async (req: Request, res: Response) => {
     })
   } catch (err) {
     console.log(err)
-    res.status(500).json({ message: 'Error al obtener el carrito.' })
+    res.status(500).json({ message: 'Error en el servidor' })
   }
 }
 
 export const deleteFromCart = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.params
-  const {token} = req.body
+  const authorizationHeader = req.headers['authorization'] as string
+  console.log(req.headers)
+
   try {
+    const token = authorizationHeader.split(' ')[1]
     const product: any = await Products.findOne({ _id: productId })
     if (!productId) {
       res.status(401).json({
@@ -85,7 +92,7 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       return
     }
 
-    const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
+    const payload = jwt.verify(token as string, process.env.SECRET_PASSWORD as string) as JwtPayload
     const myCart: any = await Cart.findOne({ userId: payload.id, statusPaid: false })
     const productInCart = myCart.items
       .map((el: any) => el.productId.toString())
@@ -104,9 +111,7 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
       )
       await myCart.save()
 
-      res.status(200).json({
-        message: `Se eliminó el siguiente artículo de su carrito: ${product?.title}`,
-      })
+      res.status(200)
       return
     } else {
       res.status(401).json({

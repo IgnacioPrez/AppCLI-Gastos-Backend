@@ -9,24 +9,14 @@ const router = Router()
 
 router.post(
   '/addInCart',
-  [
-    validateJWT,
-    isVerified,
-    check('quantity', 'Debe ingresar las cantidades del producto').not().isEmpty(),
-    collectBugs,
-  ],
+  [check('quantity', 'Debe ingresar las cantidades del producto').not().isEmpty(), collectBugs],
   addInCart
 )
 
 router.get('/', getCart)
 
-router.delete(
-  '/clearCart',
+router.delete('/clearCart', clearCart)
 
-  [validateJWT, isVerified, collectBugs],
-  clearCart
-)
-
-router.patch('/deletefromCartById/:productId', deleteFromCart)
+router.post('/deletefromCartById/:productId', deleteFromCart)
 
 export default router

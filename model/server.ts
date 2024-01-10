@@ -7,7 +7,6 @@ import PayRoutes from '../routes/payment.routes'
 import cors from 'cors'
 import { v2 as cloudinary } from 'cloudinary'
 import CartRoutes from '../routes/carts.routes'
-import cookieParser from 'cookie-parser'
 
 import { config } from 'dotenv'
 
@@ -47,11 +46,10 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cors({
-      origin:'https://e-commerce-nine-gamma.vercel.app',
-      credentials: true
+      // origin:'https://e-commerce-nine-gamma.vercel.app',
+      origin:'http://localhost:5173'
     }))
     this.app.use(express.json())
-    this.app.use(cookieParser())
     this.app.use(
       fileUpload({
         useTempFiles: true,

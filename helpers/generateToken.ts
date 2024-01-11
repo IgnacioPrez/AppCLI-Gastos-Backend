@@ -38,8 +38,8 @@ export const generateRefreshToken = (id:string = '',res:Response) => {
       res.cookie('refreshToken', refreshToken,{
         expires:new Date(Date.now() + expiresIn * 1000),
         httpOnly:true,
-        secure:!(process.env.MODO !== 'developer'),
-        sameSite:'lax',
+        secure:true,
+        sameSite:'none',
         domain: 'e-commerce-nine-gamma.vercel.app'
       })
     } catch (error) {

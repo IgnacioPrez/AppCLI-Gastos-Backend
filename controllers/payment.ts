@@ -5,7 +5,8 @@ import { Order } from '../model/order.model'
 import jwt,{ JwtPayload } from 'jsonwebtoken'
 
 export const createPay = async (req: Request, res: Response): Promise<void> => {
-  const { email, dni, streetName, streetNumber, zipCode, name, surname,token } = req.body
+  const { email, dni, streetName, streetNumber, zipCode, name, surname } = req.body
+  const token = req.headers['x-token'] as string
   try {
     const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
     const cart: any = await Cart.findOne({ userId: payload.id }).populate('items.productId')

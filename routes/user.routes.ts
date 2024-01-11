@@ -36,7 +36,7 @@ router.post(
   login
 )
 
-router.post('/profile', [
+router.get('/profile', [
   validateJWT,
   isVerified,
   collectBugs

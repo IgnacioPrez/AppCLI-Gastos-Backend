@@ -95,11 +95,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return
     }
 
-    await tokenGenerator(user.id)
-    await generateRefreshToken(user.id, res)
+     const refreshToken = await generateRefreshToken(user.id)
 
     res.json({
       user,
+      refreshToken
     })
   } catch (error) {
     console.log(error)
@@ -121,10 +121,3 @@ export const profile = async (req: Request, res: Response) => {
   }
 }
 
-export const logout = async (req: Request, res: Response): Promise<void> => {
-  res.cookie('refreshToken', '', {
-    expires: new Date(0),
-  })
-  res.sendStatus(200)
-  return
-}

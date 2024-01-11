@@ -47,12 +47,7 @@ export class Server {
   }
   middlewares(): void {
     this.app.use(cookieParser())
-    this.app.use(cors({
-      origin:'https://e-commerce-nine-gamma.vercel.app',
-      credentials: true,
-      methods: ["GET", "POST", "PATCH","OPTIONS"],
-      allowedHeaders: ["Content-Type", "Set-Cookie"], 
-    }))
+    this.app.use(cors())
     this.app.use(express.json())
     this.app.use(
       fileUpload({

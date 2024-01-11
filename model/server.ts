@@ -49,7 +49,8 @@ export class Server {
     this.app.use(cookieParser())
     this.app.use(cors({
       origin:'https://e-commerce-nine-gamma.vercel.app',
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials:true
     }))
     this.app.use(express.json())
     this.app.use(

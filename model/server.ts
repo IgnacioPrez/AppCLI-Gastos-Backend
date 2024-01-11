@@ -48,7 +48,7 @@ export class Server {
   middlewares(): void {
     this.app.use(cookieParser())
     this.app.use(cors({
-      origin:'https://e-commerce-nine-gamma.vercel.app/',
+      origin:'https://e-commerce-nine-gamma.vercel.app',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
     }))
     this.app.use(express.json())

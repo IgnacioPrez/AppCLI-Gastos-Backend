@@ -6,10 +6,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 
 export const addInCart = async (req: Request, res: Response) => {
   const { productId, quantity } = req.body
-  const authorizationHeader = req.headers['authorization'] as string
+  const token = req.headers['x-token'] as string
 
   try {
-    const token = authorizationHeader.split(' ')[1]
     const product: any = await Products.findById(productId)
     const payload = jwt.verify(token, process.env.SECRET_PASSWORD as string) as JwtPayload
     await validateProduct(productId, res)
@@ -54,14 +53,13 @@ export const addInCart = async (req: Request, res: Response) => {
     })
   } catch (err) {
     console.log(err)
-    res.status(500).json({message:'Error en el servidor'})
+    res.status(500).json({ message: 'Error en el servidor' })
   }
 }
 
 export const getCart = async (req: Request, res: Response) => {
-  const authorizationHeader = req.headers['authorization'] as string
+  const token = req.headers['x-token'] as string
   try {
-    const token = authorizationHeader.split(' ')[1]
     const payload = jwt.verify(token as string, process.env.SECRET_PASSWORD as string) as JwtPayload
     const cart: ICart | null = await Cart.findOne({ userId: payload.id, statusPaid: false }).populate('items.productId')
     if (!cart) {
@@ -77,29 +75,27 @@ export const getCart = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteFromCart = async (req: Request, res: Response): Promise<void> => {
-  const { productId } = req.params
-  const authorizationHeader = req.headers['authorization'] as string
-  console.log(req.headers)
+export const deleteFromCart = async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const token = req.headers['x-token'] as string;
 
   try {
-    const token = authorizationHeader.split(' ')[1]
-    const product: any = await Products.findOne({ _id: productId })
-    if (!productId) {
+    const product: any = await Products.findById(productId);
+    if (!product) {
       res.status(401).json({
-        message: 'Debe proporcionar un ID del producto ',
-      })
-      return
+        message: 'Debe proporcionar un ID de producto válido',
+      });
+      return;
     }
-
-    const payload = jwt.verify(token as string, process.env.SECRET_PASSWORD as string) as JwtPayload
-    const myCart: any = await Cart.findOne({ userId: payload.id, statusPaid: false })
+    const secretKey = process.env.SECRET_PASSWORD as string
+    const payload = jwt.verify(token, secretKey ) as JwtPayload;
+    const myCart: any = await Cart.findOne({ userId: payload.id, statusPaid: false });
     const productInCart = myCart.items
       .map((el: any) => el.productId.toString())
-      .findIndex((el: string) => el === productId)
+      .findIndex((el: string) => el === productId);
 
     if (productInCart !== -1) {
-      myCart.items.splice(productInCart, 1)
+      myCart.items.splice(productInCart, 1);
       await Cart.findByIdAndUpdate(
         myCart._id,
         {
@@ -108,26 +104,23 @@ export const deleteFromCart = async (req: Request, res: Response): Promise<void>
           },
         },
         { new: true }
-      )
-      await myCart.save()
-
-      res.status(200)
-      return
+      );
+      await myCart.save();
+      res.status(200).json({ message: 'Producto eliminado del carrito con éxito' });
     } else {
       res.status(401).json({
         message: 'No existe este producto en su carrito',
-      })
+      });
     }
   } catch (err) {
-    console.log(err)
-    res.status(500).json({
-      message: err,
-    })
+    console.error(err);
+    res.status(500).json({ message: 'Error en el servidor' });
   }
-}
+};
+
 
 export const clearCart = async (req: Request, res: Response): Promise<void> => {
-  const {_id} = req.body.userConfirmed
+  const { _id } = req.body.userConfirmed
 
   try {
     const myCart: any = await Cart.find({ userId: _id })
